@@ -1,0 +1,66 @@
+<html>
+<body>
+<div id="canvas">Marraztu hemen<br/></div>
+<script>
+// canvaseko kanpoa sortu
+    function createCanvas(parent, width, height) {
+        var canvas = {};
+        canvas.node = document.createElement('canvas');
+        canvas.context = canvas.node.getContext('2d');
+        canvas.node.width = width || 1000;
+        canvas.node.height = height || 500;
+        parent.appendChild(canvas.node);
+        return canvas;
+    }
+
+    function init(container, width, height, fillColor) {
+        var canvas = createCanvas(container, width, height);
+        var ctx = canvas.context;
+        // marraztuko duen marrak zirkularrak izateko
+        ctx.fillCircle = function(x, y, radius, fillColor) {
+            this.fillStyle = fillColor;
+            this.beginPath();
+            this.moveTo(x, y);
+            this.arc(x, y, radius, 0, Math.PI * 2, false);
+            this.fill();
+        };
+        //canvasren fondoko kolorea jartzeko
+        ctx.clearTo = function(fillColor) {
+            ctx.fillStyle = fillColor;
+            ctx.fillRect(0, 0, width, height);
+        };
+       ctx.clearTo(fillColor || "#ddd");
+
+        // xagua detektatu eskero margotu
+        canvas.node.onmousemove = function(e) {
+            if (!canvas.isDrawing) {
+               return;
+        }
+            var x = e.pageX - this.offsetLeft;
+            var y = e.pageY - this.offsetTop;
+            var radius = 5; // idazteko tamaina
+            var fillColor ="#1329E1";
+            ctx.fillCircle(x, y, radius, fillColor);
+        };
+        canvas.node.onmousedown = function(e) {  // xaguarekin marraztu
+            canvas.isDrawing = true;
+        };
+        canvas.node.onmouseup= function(e){ //xagua klik iginda ez badago ez margotu
+            canvas.isDrawing=false;
+        }
+    }
+
+    var container = document.getElementById('canvas');
+    init(container, 1000, 500, '#ddd');
+    
+    
+    function Borratu(){
+        document.location.reload();
+    }
+    
+</script>
+   
+   <input type="button" value="Borratu" id="Borratu" onclick="Borratu();"/>
+    
+</body>
+</html>
